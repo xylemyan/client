@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cruoyi.system.mapper.TTeacherRevokeLogMapper">
+    
+    <resultMap type="TTeacherRevokeLog" id="TTeacherRevokeLogResult">
+        <result property="revokeId"       column="revoke_id"        />
+        <result property="teacherId"      column="teacher_id"       />
+        <result property="courseId"       column="course_id"        />
+        <result property="classSeq"       column="class_seq"        />
+        <result property="academicYear"   column="academic_year"    />
+        <result property="semester"       column="semester"         />
+        <result property="revokeType"     column="revoke_type"      />
+        <result property="revokeReason"   column="revoke_reason"    />
+        <result property="applyTime"      column="apply_time"       />
+        <result property="approveStatus"  column="approve_status"   />
+        <result property="approveAdminId" column="approve_admin_id" />
+        <result property="approveTime"    column="approve_time"     />
+        <result property="approveRemark"  column="approve_remark"   />
+        <result property="teacherName"    column="teacher_name"     />
+        <result property="courseName"     column="course_name"      />
+    </resultMap>
+
+    <sql id="selectTTeacherRevokeLogVo">
+        select r.revoke_id, r.teacher_id, r.course_id, r.class_seq, r.academic_year, r.semester, 
+               r.revoke_type, r.revoke_reason, r.apply_time, r.approve_status, 
+               r.approve_admin_id, r.approve_time, r.approve_remark,
+               t.name as teacher_name, c.course_name
+        from t_teacher_revoke_log r
+        left join t_teacher t on r.teacher_id = t.teacher_id
+        left join t_course c on r.course_id = c.course_id
+    </sql>
+
+    <select id="selectTTeacherRevokeLogList" parameterType="TTeacherRevokeLog" resultMap="TTeacherRevokeLogResult">
+        <include refid="selectTTeacherRevokeLogVo"/>
+        <where>
+            <if test="teacherId != null and teacherId != ''"> and r.teacher_id = #{teacherId}</if>
+            <if test="courseId != null and courseId != ''"> and r.course_id = #{courseId}</if>
+            <if test="classSeq != null and classSeq != ''"> and r.class_seq = #{classSeq}</if>
+            <if test="academicYear != null and academicYear != ''"> and r.academic_year = #{academicYear}</if>
+            <if test="semester != null"> and r.semester = #{semester}</if>
+            <if test="revokeType != null and revokeType != ''"> and r.revoke_type = #{revokeType}</if>
+            <if test="approveStatus != null and approveStatus != ''"> and r.approve_status = #{approveStatus}</if>
+        </where>
+        order by r.apply_time desc
+    </select>
+    
+    <select id="selectTTeacherRevokeLogByRevokeId" parameterType="Long" resultMap="TTeacherRevokeLogResult">
+        <include refid="selectTTeacherRevokeLogVo"/>
+        where r.revoke_id = #{revokeId}
+    </select>
+
+    <insert id="insertTTeacherRevokeLog" parameterType="TTeacherRevokeLog" useGeneratedKeys="true" keyProperty="revokeId">
+        insert into t_teacher_revoke_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null and teacherId != ''">teacher_id,</if>
+            <if test="courseId != null and courseId != ''">course_id,</if>
+            <if test="classSeq != null and classSeq != ''">class_seq,</if>
+            <if test="academicYear != null and academicYear != ''">academic_year,</if>
+            <if test="semester != null">semester,</if>
+            <if test="revokeType != null">revoke_type,</if>
+            <if test="revokeReason != null">revoke_reason,</if>
+            <if test="applyTime != null">apply_time,</if>
+            <if test="approveStatus != null">approve_status,</if>
+            <if test="approveAdminId != null">approve_admin_id,</if>
+            <if test="approveTime != null">approve_time,</if>
+            <if test="approveRemark != null">approve_remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null and teacherId != ''">#{teacherId},</if>
+            <if test="courseId != null and courseId != ''">#{courseId},</if>
+            <if test="classSeq != null and classSeq != ''">#{classSeq},</if>
+            <if test="academicYear != null and academicYear != ''">#{academicYear},</if>
+            <if test="semester != null">#{semester},</if>
+            <if test="revokeType != null">#{revokeType},</if>
+            <if test="revokeReason != null">#{revokeReason},</if>
+            <if test="applyTime != null">#{applyTime},</if>
+            <if test="approveStatus != null">#{approveStatus},</if>
+            <if test="approveAdminId != null">#{approveAdminId},</if>
+            <if test="approveTime != null">#{approveTime},</if>
+            <if test="approveRemark != null">#{approveRemark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTTeacherRevokeLog" parameterType="TTeacherRevokeLog">
+        update t_teacher_revoke_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="teacherId != null and teacherId != ''">teacher_id = #{teacherId},</if>
+            <if test="courseId != null and courseId != ''">course_id = #{courseId},</if>
+            <if test="classSeq != null and classSeq != ''">class_seq = #{classSeq},</if>
+            <if test="academicYear != null and academicYear != ''">academic_year = #{academicYear},</if>
+            <if test="semester != null">semester = #{semester},</if>
+            <if test="revokeType != null">revoke_type = #{revokeType},</if>
+            <if test="revokeReason != null">revoke_reason = #{revokeReason},</if>
+            <if test="applyTime != null">apply_time = #{applyTime},</if>
+            <if test="approveStatus != null">approve_status = #{approveStatus},</if>
+            <if test="approveAdminId != null">approve_admin_id = #{approveAdminId},</if>
+            <if test="approveTime != null">approve_time = #{approveTime},</if>
+            <if test="approveRemark != null">approve_remark = #{approveRemark},</if>
+        </trim>
+        where revoke_id = #{revokeId}
+    </update>
+
+    <delete id="deleteTTeacherRevokeLogByRevokeId" parameterType="Long">
+        delete from t_teacher_revoke_log where revoke_id = #{revokeId}
+    </delete>
+
+    <delete id="deleteTTeacherRevokeLogByRevokeIds" parameterType="String">
+        delete from t_teacher_revoke_log where revoke_id in 
+        <foreach item="revokeId" collection="array" open="(" separator="," close=")">
+            #{revokeId}
+        </foreach>
+    </delete>
+</mapper>

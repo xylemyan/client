@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cruoyi.system.mapper.TAdminMapper">
+    
+    <resultMap type="TAdmin" id="TAdminResult">
+        <result property="adminId"    column="admin_id"    />
+        <result property="password"    column="password"    />
+        <result property="college"    column="college"    />
+        <result property="name"    column="name"    />
+        <result property="gender"    column="gender"    />
+    </resultMap>
+
+    <sql id="selectTAdminVo">
+        select admin_id, password, college, name, gender from t_admin
+    </sql>
+
+    <select id="selectTAdminList" parameterType="TAdmin" resultMap="TAdminResult">
+        <include refid="selectTAdminVo"/>
+        <where>  
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="college != null  and college != ''"> and college = #{college}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+        </where>
+    </select>
+    
+    <select id="selectTAdminByAdminId" parameterType="String" resultMap="TAdminResult">
+        <include refid="selectTAdminVo"/>
+        where admin_id = #{adminId}
+    </select>
+
+    <insert id="insertTAdmin" parameterType="TAdmin">
+        insert into t_admin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adminId != null">admin_id,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="college != null">college,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="adminId != null">#{adminId},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="college != null">#{college},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTAdmin" parameterType="TAdmin">
+        update t_admin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="college != null">college = #{college},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+        </trim>
+        where admin_id = #{adminId}
+    </update>
+
+    <delete id="deleteTAdminByAdminId" parameterType="String">
+        delete from t_admin where admin_id = #{adminId}
+    </delete>
+
+    <delete id="deleteTAdminByAdminIds" parameterType="String">
+        delete from t_admin where admin_id in 
+        <foreach item="adminId" collection="array" open="(" separator="," close=")">
+            #{adminId}
+        </foreach>
+    </delete>
+</mapper>

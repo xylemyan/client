@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cruoyi.system.mapper.GradeAnalysisMapper">
+
+    <resultMap type="com.cruoyi.system.domain.vo.GradeRowVO" id="GradeRowResult">
+        <result property="studentId"    column="student_id"    />
+        <result property="studentName"  column="name"    />
+        <result property="className"    column="class_name"    />
+        <result property="scoreRegular" column="score_regular"    />
+        <result property="scoreAttendance" column="score_attendance"    />
+        <result property="scoreHomework"   column="score_homework"    />
+        <result property="scoreExperiment" column="score_experiment"    />
+        <result property="scoreMidterm"    column="score_midterm"    />
+        <result property="scoreFinalExam"  column="score_final_exam"    />
+        <result property="scoreResit"   column="score_resit"    />
+        <result property="scoreTotal"   column="score_total"    />
+        <result property="passStatus"   column="pass_status"    />
+    </resultMap>
+
+    <resultMap type="com.cruoyi.system.domain.vo.GradeHistoryVO" id="GradeHistoryResult">
+        <result property="courseName"   column="course_name"    />
+        <result property="academicYear" column="academic_year"    />
+        <result property="semester"     column="semester"    />
+        <result property="avgScore"     column="avg_score"    />
+        <result property="maxScore"     column="max_score"    />
+        <result property="minScore"     column="min_score"    />
+        <result property="passRate"     column="pass_rate"    />
+        <result property="classCount"   column="class_count"    />
+    </resultMap>
+
+    <select id="selectGradeCoefficients" resultType="java.util.Map">
+        SELECT * FROM t_grade_coefficient ORDER BY setting_id DESC LIMIT 1
+    </select>
+
+    <select id="selectGradeList" parameterType="GradeAnalysisDTO" resultMap="GradeRowResult">
+        SELECT 
+            s.student_id,
+            s.name,
+            s.class_name,
+            sg.score_regular,
+            sg.score_attendance,
+            sg.score_homework,
+            sg.score_experiment,
+            sg.score_midterm,
+            sg.score_final_exam,
+            sg.score_resit,
+            sg.score_total,
+            
+            CASE 
+                -- If all scores are NULL, treat as not graded (9)
+                WHEN sg.score_regular IS NULL
+                  AND sg.score_attendance IS NULL
+                  AND sg.score_homework IS NULL
+                  AND sg.score_experiment IS NULL
+                  AND sg.score_midterm IS NULL
+                  AND sg.score_final_exam IS NULL
+                  AND sg.score_resit IS NULL
+                  AND sg.score_total IS NULL THEN '9'
+                -- If Resit exists and is pass (>=60), then Pass (2)
+                WHEN sg.score_resit >= 60 THEN '2' 
+                -- If Total >= 60, then Pass (0)
+                WHEN sg.score_total >= 60 THEN '0'
+                -- Else Fail (1)
+                ELSE '1'
+            END as pass_status
+
+        FROM t_student_grade sg
+        LEFT JOIN t_student s ON sg.student_id = s.student_id
+        WHERE sg.course_id = #{courseId}
+          AND sg.academic_year = #{academicYear}
+          AND sg.semester = #{semester}
+          <if test="classSeq != null and classSeq != ''">
+              AND sg.class_seq = #{classSeq}
+          </if>
+    </select>
+
+    <select id="selectTeacherCourses" parameterType="GradeAnalysisDTO" resultType="java.util.Map">
+        SELECT DISTINCT
+            c.course_id,
+            c.course_name,
+            ta.class_seq
+        FROM t_teacher_assignment ta
+        LEFT JOIN t_course c ON ta.course_id = c.course_id
+        WHERE ta.teacher_id = #{teacherId}
+          AND ta.academic_year = #{academicYear}
+          AND ta.semester = #{semester}
+    </select>
+
+    <select id="selectAnalysis" parameterType="GradeAnalysisDTO" resultType="String">
+        SELECT grade_analysis
+        FROM t_teacher_assignment
+        WHERE course_id = #{courseId}
+          AND teacher_id = #{teacherId}
+          AND academic_year = #{academicYear}
+          AND semester = #{semester}
+          AND class_seq = #{classSeq}
+    </select>
+
+    <update id="updateAnalysis" parameterType="GradeAnalysisDTO">
+        UPDATE t_teacher_assignment
+        SET grade_analysis = #{analysisContent}
+        WHERE course_id = #{courseId}
+          AND teacher_id = #{teacherId}
+          AND academic_year = #{academicYear}
+          AND semester = #{semester}
+          AND class_seq = #{classSeq}
+    </update>
+
+    <select id="selectHistoryCourses" parameterType="GradeAnalysisDTO" resultMap="GradeHistoryResult">
+        SELECT
+            c.course_name,
+            sg.academic_year,
+            sg.semester,
+            ROUND(AVG(IFNULL(sg.score_total, 0)), 1) as avg_score,
+            MAX(IFNULL(sg.score_total, 0)) as max_score,
+            MIN(IFNULL(sg.score_total, 0)) as min_score,
+            /* Pass Rate Calculation: Count(>=60) / Count(*) */
+            ROUND(
+                SUM(CASE WHEN IFNULL(sg.score_total, 0) >= 60 THEN 1 ELSE 0 END) * 100.0 / COUNT(*)
+            , 1) as pass_rate,
+            COUNT(DISTINCT s.class_name) as class_count
+
+        FROM t_student_grade sg
+        LEFT JOIN t_course c ON sg.course_id = c.course_id
+        LEFT JOIN t_student s ON sg.student_id = s.student_id
+        /* Join teacher assignment to filter by teacher */
+        LEFT JOIN t_teacher_assignment ta ON sg.course_id = ta.course_id 
+                                         AND sg.academic_year = ta.academic_year 
+                                         AND sg.semester = ta.semester
+                                         AND sg.class_seq = ta.class_seq
+        WHERE 1=1
+        <if test="teacherId != null and teacherId != ''">
+            AND ta.teacher_id = #{teacherId}
+        </if>
+        <if test="courseName != null and courseName != ''">
+            AND c.course_name LIKE concat('%', #{courseName}, '%')
+        </if>
+        <if test="academicYear != null and academicYear != ''">
+            AND sg.academic_year = #{academicYear}
+        </if>
+        <if test="semester != null and semester != ''">
+            AND sg.semester = #{semester}
+        </if>
+        GROUP BY c.course_name, sg.academic_year, sg.semester
+        ORDER BY sg.academic_year DESC, sg.semester DESC
+    </select>
+    
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cruoyi.system.mapper.TStudentMapper">
+    
+    <resultMap type="TStudent" id="TStudentResult">
+        <result property="studentId"    column="student_id"    />
+        <result property="password"    column="password"    />
+        <result property="college"    column="college"    />
+        <result property="department"    column="department"    />
+        <result property="className"    column="class_name"    />
+        <result property="name"    column="name"    />
+        <result property="gender"    column="gender"    />
+    </resultMap>
+
+    <sql id="selectTStudentVo">
+        select student_id, password, college, department, class_name, name, gender from t_student
+    </sql>
+
+    <select id="selectTStudentList" parameterType="TStudent" resultMap="TStudentResult">
+        <include refid="selectTStudentVo"/>
+        <where>  
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="college != null  and college != ''"> and college = #{college}</if>
+            <if test="department != null  and department != ''"> and department = #{department}</if>
+            <if test="className != null  and className != ''"> and class_name like concat('%', #{className}, '%')</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+        </where>
+    </select>
+    
+    <select id="selectTStudentByStudentId" parameterType="String" resultMap="TStudentResult">
+        <include refid="selectTStudentVo"/>
+        where student_id = #{studentId}
+    </select>
+
+    <insert id="insertTStudent" parameterType="TStudent">
+        insert into t_student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">student_id,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="college != null and college != ''">college,</if>
+            <if test="department != null">department,</if>
+            <if test="className != null and className != ''">class_name,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">#{studentId},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="college != null and college != ''">#{college},</if>
+            <if test="department != null">#{department},</if>
+            <if test="className != null and className != ''">#{className},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTStudent" parameterType="TStudent">
+        update t_student
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="college != null and college != ''">college = #{college},</if>
+            <if test="department != null">department = #{department},</if>
+            <if test="className != null and className != ''">class_name = #{className},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+        </trim>
+        where student_id = #{studentId}
+    </update>
+
+    <delete id="deleteTStudentByStudentId" parameterType="String">
+        delete from t_student where student_id = #{studentId}
+    </delete>
+
+    <delete id="deleteTStudentByStudentIds" parameterType="String">
+        delete from t_student where student_id in 
+        <foreach item="studentId" collection="array" open="(" separator="," close=")">
+            #{studentId}
+        </foreach>
+    </delete>
+</mapper>

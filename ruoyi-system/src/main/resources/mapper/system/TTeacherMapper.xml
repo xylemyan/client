@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cruoyi.system.mapper.TTeacherMapper">
+    
+    <resultMap type="TTeacher" id="TTeacherResult">
+        <result property="teacherId"    column="teacher_id"    />
+        <result property="password"    column="password"    />
+        <result property="college"    column="college"    />
+        <result property="department"    column="department"    />
+        <result property="name"    column="name"    />
+        <result property="gender"    column="gender"    />
+    </resultMap>
+
+    <sql id="selectTTeacherVo">
+        select teacher_id, password, college, department, name, gender from t_teacher
+    </sql>
+
+    <select id="selectTTeacherList" parameterType="TTeacher" resultMap="TTeacherResult">
+        <include refid="selectTTeacherVo"/>
+        <where>  
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="college != null  and college != ''"> and college = #{college}</if>
+            <if test="department != null  and department != ''"> and department = #{department}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+        </where>
+    </select>
+    
+    <select id="selectTTeacherByTeacherId" parameterType="String" resultMap="TTeacherResult">
+        <include refid="selectTTeacherVo"/>
+        where teacher_id = #{teacherId}
+    </select>
+
+    <insert id="insertTTeacher" parameterType="TTeacher">
+        insert into t_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null">teacher_id,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="college != null and college != ''">college,</if>
+            <if test="department != null">department,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null">#{teacherId},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="college != null and college != ''">#{college},</if>
+            <if test="department != null">#{department},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTeacher" parameterType="TTeacher">
+        update t_teacher
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="college != null and college != ''">college = #{college},</if>
+            <if test="department != null">department = #{department},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+        </trim>
+        where teacher_id = #{teacherId}
+    </update>
+
+    <delete id="deleteTTeacherByTeacherId" parameterType="String">
+        delete from t_teacher where teacher_id = #{teacherId}
+    </delete>
+
+    <delete id="deleteTTeacherByTeacherIds" parameterType="String">
+        delete from t_teacher where teacher_id in 
+        <foreach item="teacherId" collection="array" open="(" separator="," close=")">
+            #{teacherId}
+        </foreach>
+    </delete>
+</mapper>
