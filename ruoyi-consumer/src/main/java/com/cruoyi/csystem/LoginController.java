@@ -4,10 +4,7 @@ import com.cruoyi.common.core.domain.AjaxResult;
 import com.cruoyi.common.core.domain.model.LoginBody;
 import com.cruoyi.feign.LoginClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -46,5 +43,10 @@ public class LoginController {
     }
 
     // 检查初始密码是否提醒修改
+    @PostMapping("logout")
+    public AjaxResult logout(){
+        return loginClient.logout();
+    }
+
 
 }
