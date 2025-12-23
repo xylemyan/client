@@ -39,6 +39,7 @@
         <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <lombok.version>1.18.30</lombok.version>
     </properties>
 
     <!-- 依赖版本管理：统一管理所有依赖版本 -->
