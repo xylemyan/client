@@ -20,7 +20,9 @@ public class StudentGradeController {
             @RequestParam(required = false) String classSeq,
             @RequestParam(required = false) String academicYear,
             @RequestParam(required = false) Long semester,
-            @RequestParam(required = false) String studentId  // Feign调用时传递
+            @RequestParam(required = false) String studentId,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,      // 添加页码
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize// Feign调用时传递
     ){
         return studentGradeClient.list(courseId,classSeq,academicYear,semester,studentId);
     }
