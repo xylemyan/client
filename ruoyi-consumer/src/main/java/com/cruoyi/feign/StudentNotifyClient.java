@@ -12,7 +12,9 @@ public interface StudentNotifyClient {
     public TableDataInfo list(
             @RequestParam(required = false) String academicYear,
             @RequestParam(required = false) Long semester,
-            @RequestParam(required = false) Long isRead
+            @RequestParam(required = false) Long isRead,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,      // 添加页码
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize   // 添加页大
     );
 
     // 修改学生个人通知
