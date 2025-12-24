@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "TeacherGrade")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "TeacherGrade")
 public interface TeacherGradeClient {
     @GetMapping("/teacher/grade/currentTerm")
     public AjaxResult getCurrentTerm();

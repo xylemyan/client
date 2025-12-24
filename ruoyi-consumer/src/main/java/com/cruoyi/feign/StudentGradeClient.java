@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "studentGradeClient")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "studentGradeClient")
 public interface StudentGradeClient {
 
     //查询学生成绩列表

@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "systemNotifyMessageClient")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "systemNotifyMessageClient")
 public interface TeacherNotifyClient {
     @GetMapping("/teacher/notify/list")
     public AjaxResult getNotifyList(@RequestParam(required = false, value = "readStatus") Integer readStatus);

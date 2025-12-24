@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 成绩撤销管理Feign客户端
  */
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "Revoke")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "Revoke")
 public interface RevokeClient {
 
     /**

@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "LoginClient")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "LoginClient")
 public interface LoginClient {
     @PostMapping("/login")
     public AjaxResult login(@RequestBody LoginBody loginBody);

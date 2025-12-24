@@ -5,7 +5,7 @@ import com.cruoyi.common.core.page.TableDataInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "studentNotifyClient")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "studentNotifyClient")
 public interface StudentNotifyClient {
     //查询学生个人通知列表
     @GetMapping("/student.notification/notification/list")

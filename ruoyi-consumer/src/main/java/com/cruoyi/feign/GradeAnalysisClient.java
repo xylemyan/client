@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "GradeAnalysis")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "GradeAnalysis")
 public interface GradeAnalysisClient {
 
     @GetMapping("/system/gradeAnalysis/generate")

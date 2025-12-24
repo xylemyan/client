@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 区块链服务Feign客户端
  */
-@FeignClient(name = "ruoyi-server", url = "http://localhost:8081", contextId = "Blockchain")
+@FeignClient(name = "ruoyi-server", url = "https://localhost:8081", contextId = "Blockchain")
 public interface BlockchainClient {
 
     /**
