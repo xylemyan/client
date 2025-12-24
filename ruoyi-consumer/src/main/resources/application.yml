@@ -1,5 +1,5 @@
 server:
-  port: 8080  # 客户端对外端口（和原RuoYi一致，前端访问此端口）
+  port: 8082  # 客户端对外端口（和原RuoYi一致，前端访问此端口）
   ssl:
     enabled: true
     key-store: classpath:ssl/https-client.jks # 客户端自签名证书（可复用服务端的）

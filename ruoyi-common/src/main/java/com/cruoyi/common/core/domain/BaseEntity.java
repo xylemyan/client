@@ -39,7 +39,7 @@ public class BaseEntity implements Serializable
     private String remark;
 
     /** 请求参数 */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonIgnore
     private Map<String, Object> params;
 
     public String getSearchValue()
