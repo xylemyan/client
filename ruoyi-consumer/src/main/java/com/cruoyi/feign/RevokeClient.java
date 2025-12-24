@@ -4,6 +4,7 @@ import com.cruoyi.common.core.domain.AjaxResult;
 import com.cruoyi.common.core.page.TableDataInfo;
 import com.cruoyi.domain.dto.TeacherRevokeLogDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -16,7 +17,7 @@ public interface RevokeClient {
      * 查询成绩撤销申请列表
      */
     @GetMapping("/system/revoke/list")
-    TableDataInfo list(TeacherRevokeLogDTO dto);
+    TableDataInfo list(@SpringQueryMap TeacherRevokeLogDTO dto);
 
     /**
      * 获取成绩撤销申请详细信息

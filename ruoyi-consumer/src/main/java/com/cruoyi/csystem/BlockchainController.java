@@ -66,4 +66,20 @@ public class BlockchainController extends BaseController {
     public AjaxResult storeGrade(@RequestBody GradeStoreDTO dto) {
         return blockchainClient.storeGrade(dto);
     }
+
+    /**
+     * 从区块链还原成绩到数据库
+     */
+    @PostMapping("/restoreToDb")
+    public AjaxResult restoreToDb(@RequestBody GradeQueryDTO dto) {
+        return blockchainClient.restoreToDb(dto);
+    }
+
+    /**
+     * 批量扫描成绩篡改
+     */
+    @GetMapping("/scanTampered")
+    public AjaxResult scanTampered() {
+        return blockchainClient.scanTampered();
+    }
 }
