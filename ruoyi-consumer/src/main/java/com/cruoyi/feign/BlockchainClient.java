@@ -50,4 +50,16 @@ public interface BlockchainClient {
      */
     @PostMapping("/system/blockchain/storeGrade")
     AjaxResult storeGrade(@RequestBody GradeStoreDTO dto);
+
+    /**
+     * 从区块链还原成绩到数据库
+     */
+    @PostMapping("/system/blockchain/restoreToDb")
+    AjaxResult restoreToDb(@RequestBody GradeQueryDTO dto);
+
+    /**
+     * 批量扫描成绩篡改
+     */
+    @GetMapping("/system/blockchain/scanTampered")
+    AjaxResult scanTampered();
 }
