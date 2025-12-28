@@ -1,8 +1,8 @@
 server:
-  port: 8082  # 客户端对外端口（和原RuoYi一致，前端访问此端口）
+  port: 8082  # 客户端对外端口（前端访问此端口）
   ssl:
     enabled: true
-    key-store: classpath:ssl/https-client.jks # 客户端自签名证书（可复用服务端的）
+    key-store: classpath:ssl/https-client.jks
     key-store-type: JKS
     key-store-password: 123456
     key-alias: ruoyi-https
@@ -32,9 +32,9 @@ feign:
     config:
       # 全局配置（所有Feign接口生效）
       default:
-        connectTimeout: 3000  # 连接超时时间（ms）
-        readTimeout: 5000     # 读取超时时间（ms）
-        loggerLevel: FULL     # 日志级别：NONE/BASIC/HEADERS/FULL
+        connectTimeout: 10000  # 连接超时时间（ms）
+        readTimeout: 300000    # 读取超时时间（ms）- 5分钟，适配大数据量同步
+        loggerLevel: FULL      # 日志级别：NONE/BASIC/HEADERS/FULL
       # 针对指定服务的配置（优先级高于全局）
       ruoyi-server:
         connectTimeout: 2000
